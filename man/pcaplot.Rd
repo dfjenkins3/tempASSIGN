@@ -4,7 +4,7 @@
 \alias{pcaplot}
 \title{Display a PCA Plot of the Data}
 \usage{
-pcaplot(mat, sub, center = T, scale = T)
+pcaplot(mat, sub, center = T, scale = T, plottitle = "PCA")
 }
 \arguments{
 \item{mat}{The data frame on which to perform pca.}
@@ -18,6 +18,9 @@ shifted to be zero centered. The default is TRUE}
 \item{scale}{a logical value indicating whether the variables should be
 scaled to have unit variance before the analysis takes place. The default
 is TRUE}
+
+\item{plottitle}{The title to display above your PCA plot. The default is
+"PCA".}
 }
 \value{
 A PCA plot is displayed

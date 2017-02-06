@@ -31,28 +31,27 @@ merge_drop<-function(x,y,by=0,...){
 #' @param scale a logical value indicating whether the variables should be
 #' scaled to have unit variance before the analysis takes place. The default
 #' is TRUE
+#' @param plottitle The title to display above your PCA plot. The default is
+#' "PCA".
 #'
 #' @return A PCA plot is displayed
 #' @export pcaplot
 #'
-pcaplot<-function(mat,sub,center=T,scale=T){
-  if(sum(sub)!=length(mat)){
-    print("verify the subscripts...exiting now")
+pcaplot<-function(mat,sub,center=T,scale=T, plottitle="PCA"){
+  if(length(sub)!=length(mat)){
+    stop("verify the subscripts...exiting now")
   }
   else{
     pca_mat <- stats::prcomp(t(mat), center=center,scale=scale)
-    graphics::plot(pca_mat)
-    graphics::plot(pca_mat$x[,1],pca_mat$x[,2])
-    graphics::abline(h=0,v=0)
-    for(i in length(sub):1){
-      if(i!=1){
-        graphics::points(pca_mat$x[sum(sub[1:i-1]):sum(sub[1:i])],
-                         pca_mat$x[sum(sub[1:i-1]):sum(sub[1:i]),2],col=i,pch=i)
-      }
-      else{
-        graphics::points(pca_mat$x[1:sub[i]],pca_mat$x[1:sub[i],2],col=i,pch=i)
-      }
-    }
+    pca_mat_plot <- data.frame(pca_mat$x[,1:2])
+    pca_mat_plot$Group <- factor(sub)
+    explained_var <- ((pca_mat$sdev)^2) / sum(pca_mat$sdev^2)
+    return(ggplot2::ggplot(pca_mat_plot, ggplot2::aes_string(x='PC1', y='PC2')) + 
+             ggplot2::geom_point(ggplot2::aes_string(colour = 'Group'), size=2) +
+             ggplot2::xlab(paste("PC1 (",round(explained_var[1]*100,2),"%)", sep="")) +
+             ggplot2::ylab(paste("PC2 (",round(explained_var[2]*100,2),"%)", sep="")) +
+             ggplot2::ggtitle(plottitle) + 
+             ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5)))
   }
 }
 
